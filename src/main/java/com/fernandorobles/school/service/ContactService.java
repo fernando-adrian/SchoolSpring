@@ -1,9 +1,15 @@
 package com.fernandorobles.school.service;
 
+import com.fernandorobles.school.constants.SchoolConstants;
 import com.fernandorobles.school.model.Contact;
+import com.fernandorobles.school.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -12,26 +18,30 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @ApplicationScope
 public class ContactService {
 
+    @Autowired
+    private ContactRepository contactRepository;
 
-
-    private int counter = 0;
     public ContactService() {
         System.out.println("Contact Service Bean initialized");
     }
     public boolean saveMessageDetails(Contact contact){
-        boolean isSaved = true;
-        // TODO: 9/21/2022 - Need to persist the data into the DB
-        log.info(contact.toString());
-        return isSaved;
-    }
-    public int incrementCounter(){
-        return counter++;
-    }
-    public int getCounter() {
-        return counter;
+
+        contact.setStatus(SchoolConstants.OPEN);
+        contact.setCreatedBy(SchoolConstants.ANONYMOUS);
+        contact.setCreatedAt(LocalDateTime.now());
+        int result = contactRepository.saveContactMsg(contact);
+
+        return result > 0;
     }
 
-    public void setCounter(int counter) {
-        this.counter = counter;
+    public List<Contact> findMessagesWithOpenStatus() {
+        return contactRepository.findMessagesWithStatus(SchoolConstants.OPEN);
+    }
+
+    public boolean updateMessageStatus(int contactId, String updatedBy) {
+
+        int result = contactRepository.updateMsgStatus(contactId, SchoolConstants.CLOSE, updatedBy);
+        return result > 0;
+
     }
 }

@@ -5,6 +5,7 @@ import com.fernandorobles.school.service.ContactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class ContactController {
@@ -55,8 +57,20 @@ public class ContactController {
             return "contact.html";
         }
         contactService.saveMessageDetails(contact);
-        contactService.incrementCounter();
-        log.info("Number of times the Contact form is submitted: " + contactService.getCounter());
         return "redirect:/contact";
+    }
+
+    @RequestMapping(value="/displayMessages", method = RequestMethod.GET)
+    public ModelAndView displayMessages(Model model){
+        List<Contact> contacts = contactService.findMessagesWithOpenStatus();
+        ModelAndView modelAndView = new ModelAndView("messages.html");
+        modelAndView.addObject("contactMsgs", contacts);
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/closeMsg", method = RequestMethod.GET)
+    public String closeMsg(@RequestParam int id, Authentication authentication){
+        contactService.updateMessageStatus(id, authentication.getName());
+        return "redirect:/displayMessages";
     }
 }
