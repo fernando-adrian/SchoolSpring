@@ -25,8 +25,8 @@ public class ContactRepository {
     }
 
     public int saveContactMsg(Contact contact){
-        String sql = "INSERT INTO CONTACT_MSG (NAME,MOBILE_NUM,EMAIL,SUBJECT,MESSAGE,STATUS," +
-                "CREATED_AT,CREATED_BY) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "insert into contact_msg (name,mobile_num,email,subject,message,status," +
+                "created_at,created_by) values (?,?,?,?,?,?,?,?)";
         return jdbcTemplate.update(
                 sql,
                 contact.getName(),
@@ -42,7 +42,7 @@ public class ContactRepository {
 
     public List<Contact> findMessagesWithStatus(String status) {
 //        String query = "SELECT * FROM CONTACT_MSG WHERE STATUS = ?";
-        String query = "SELECT * FROM CONTACT_MSG WHERE STATUS = '" + status + "'";
+        String query = "select * from contact_msg where status = '" + status + "'";
         return jdbcTemplate.query(query,new ContactRowMapper());
 //        return jdbcTemplate.query(query, new PreparedStatementSetter() {
 //            @Override
@@ -54,7 +54,7 @@ public class ContactRepository {
 
     public int updateMsgStatus(int contactId, String status, String updatedBy) {
 
-        String query = "UPDATE CONTACT_MSG SET STATUS = ?, UPDATED_BY = ?, UPDATED_AT = ? WHERE CONTACT_ID = ?";
+        String query = "update contact_msg set status = ?, updated_by = ?, updated_at = ? where contact_id = ?";
         return jdbcTemplate.update(query, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
