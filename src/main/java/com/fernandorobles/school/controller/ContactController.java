@@ -5,7 +5,6 @@ import com.fernandorobles.school.service.ContactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -36,20 +35,6 @@ public class ContactController {
         return "contact.html";
     }
 
-//    @RequestMapping(value="/saveMsg", method = RequestMethod.POST)
-//    public ModelAndView saveMessage(@RequestParam String name,
-//                                    @RequestParam String mobileNum,
-//                                    @RequestParam String email,
-//                                    @RequestParam String subject,
-//                                    @RequestParam String message){
-//        log.info("Name : " + name);
-//        log.info("Mobile Number : " + mobileNum);
-//        log.info("Email : " + email);
-//        log.info("Subject : " + subject);
-//        log.info("Message : " + message);
-//        return new ModelAndView("redirect:/contact");
-//    }
-
     @RequestMapping(value = "/saveMsg", method = RequestMethod.POST)
     public String saveMessage(@Valid @ModelAttribute("contact") Contact contact, Errors errors){
         if (errors.hasErrors()){
@@ -69,8 +54,8 @@ public class ContactController {
     }
 
     @RequestMapping(value="/closeMsg", method = RequestMethod.GET)
-    public String closeMsg(@RequestParam int id, Authentication authentication){
-        contactService.updateMessageStatus(id, authentication.getName());
+    public String closeMsg(@RequestParam int id){
+        contactService.updateMessageStatus(id);
         return "redirect:/displayMessages";
     }
 }

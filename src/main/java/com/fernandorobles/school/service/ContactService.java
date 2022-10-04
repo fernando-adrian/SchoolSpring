@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
-//@RequestScope
-//@SessionScope
 @ApplicationScope
 public class ContactService {
 
@@ -27,21 +25,25 @@ public class ContactService {
     public boolean saveMessageDetails(Contact contact){
 
         contact.setStatus(SchoolConstants.OPEN);
-        contact.setCreatedBy(SchoolConstants.ANONYMOUS);
-        contact.setCreatedAt(LocalDateTime.now());
-        int result = contactRepository.saveContactMsg(contact);
+        Contact savedContact = contactRepository.save(contact);
 
-        return result > 0;
+        return savedContact.getContactId() > 0;
     }
 
     public List<Contact> findMessagesWithOpenStatus() {
-        return contactRepository.findMessagesWithStatus(SchoolConstants.OPEN);
+
+        return contactRepository.findByStatus(SchoolConstants.OPEN);
     }
 
-    public boolean updateMessageStatus(int contactId, String updatedBy) {
+    public boolean updateMessageStatus(int contactId) {
 
-        int result = contactRepository.updateMsgStatus(contactId, SchoolConstants.CLOSE, updatedBy);
-        return result > 0;
+        Optional<Contact> contact = contactRepository.findById(contactId);
+        contact.ifPresent( contactFound -> {
+            contactFound.setStatus(SchoolConstants.CLOSE);
+        });
+        Contact updatedContact = contactRepository.save(contact.get());
+
+        return updatedContact.getUpdatedBy() != null;
 
     }
 }
