@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
                 message = "Email do not match!"
         )
 })
-public class Person {
+public class Person extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -63,7 +63,7 @@ public class Person {
     @JoinColumn(name = "role_id", referencedColumnName = "roleId", nullable = false)
     private Roles roles;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, targetEntity = Address.class)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Address.class)
     @JoinColumn(name = "address_id", referencedColumnName = "addressId", nullable = false)
     private Address address;
 }

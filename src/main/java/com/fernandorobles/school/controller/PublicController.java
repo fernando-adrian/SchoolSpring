@@ -30,7 +30,10 @@ public class PublicController {
     @RequestMapping(value = "/createUser", method = { RequestMethod.POST })
     public String createUser(@Valid @ModelAttribute("person") Person person, Errors errors){
 
-        return errors.hasErrors() ? "register.html" : "redirect:/login?register=true";
+        if (errors.hasErrors())
+            return "register.html";
+
+        return personService.createNewPerson(person) ? "redirect:/login?register=true" : "register.html";
 
     }
 }
