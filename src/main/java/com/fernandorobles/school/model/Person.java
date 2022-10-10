@@ -3,6 +3,9 @@ package com.fernandorobles.school.model;
 import com.fernandorobles.school.annotation.FieldsValueMatch;
 import com.fernandorobles.school.annotation.PasswordValidator;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,7 +14,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Data
+@Getter
+@Setter
 @Entity
 @FieldsValueMatch.List({
         @FieldsValueMatch(
@@ -66,4 +70,8 @@ public class Person extends BaseEntity{
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Address.class)
     @JoinColumn(name = "address_id", referencedColumnName = "addressId", nullable = false)
     private Address address;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "class_id", referencedColumnName = "classId", nullable = true)
+    private SchoolClass schoolClass;
 }
