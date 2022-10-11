@@ -8,6 +8,7 @@ import com.fernandorobles.school.repository.PersonRepository;
 import com.fernandorobles.school.repository.SchoolClassRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -111,7 +112,8 @@ public class AdminController {
 
     @GetMapping("/displayCourses")
     public ModelAndView displayCourses(Model model){
-        List<Courses> courses = coursesRepository.findAll();
+//        List<Courses> courses = coursesRepository.findByOrderByNameDesc();
+        List<Courses> courses = coursesRepository.findAll(Sort.by("name").ascending());
         ModelAndView modelAndView = new ModelAndView("courses_secure.html");
         modelAndView.addObject("courses", courses);
         model.addAttribute("course", new Courses());

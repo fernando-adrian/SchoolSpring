@@ -5,6 +5,10 @@ import com.fernandorobles.school.model.Contact;
 import com.fernandorobles.school.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
@@ -30,9 +34,15 @@ public class ContactService {
         return savedContact.getContactId() > 0;
     }
 
-    public List<Contact> findMessagesWithOpenStatus() {
-
-        return contactRepository.findByStatus(SchoolConstants.OPEN);
+    public Page<Contact> findMessagesWithOpenStatus(int pageNum, String sortField,
+                                                    String sortDir) {
+        int pageSize = 5;
+        Pageable pageable =
+                PageRequest.of(pageNum - 1, pageSize,
+                        sortDir.equals("asc") ?
+                                Sort.by(sortField).ascending() :
+                                Sort.by(sortField).descending());
+        return contactRepository.findByStatus(SchoolConstants.OPEN, pageable);
     }
 
     public boolean updateMessageStatus(int contactId) {
