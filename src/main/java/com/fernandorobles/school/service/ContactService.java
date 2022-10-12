@@ -34,8 +34,8 @@ public class ContactService {
         return savedContact.getContactId() > 0;
     }
 
-    public Page<Contact> findMessagesWithOpenStatus(int pageNum, String sortField,
-                                                    String sortDir) {
+    public Page<Contact> findMessagesWithOpenStatus(
+            int pageNum, String sortField, String sortDir) {
         int pageSize = 5;
         Pageable pageable =
                 PageRequest.of(pageNum - 1, pageSize,
@@ -47,13 +47,6 @@ public class ContactService {
 
     public boolean updateMessageStatus(int contactId) {
 
-        Optional<Contact> contact = contactRepository.findById(contactId);
-        contact.ifPresent( contactFound -> {
-            contactFound.setStatus(SchoolConstants.CLOSE);
-        });
-        Contact updatedContact = contactRepository.save(contact.get());
-
-        return updatedContact.getUpdatedBy() != null;
-
+        return contactRepository.updateMsgStatus(SchoolConstants.CLOSE, contactId) > 0;
     }
 }
