@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Profile("prod")
-public class SchoolUsernamePasswordAuthProvider implements AuthenticationProvider {
+@Profile("!prod")
+public class SchoolNonProdUsernamePasswordAuthProvider implements AuthenticationProvider {
 
     @Autowired
     private PersonRepository personRepository;
@@ -29,13 +29,11 @@ public class SchoolUsernamePasswordAuthProvider implements AuthenticationProvide
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Authentication authenticate(Authentication auth) throws AuthenticationException{
+    public Authentication authenticate(Authentication auth) throws AuthenticationException {
         String email = auth.getName();
         String password = auth.getCredentials().toString();
         Person person = personRepository.readByEmail(email);
-        if (person != null &&
-                person.getPersonId() > 0 &&
-                passwordEncoder.matches(password, person.getPwd())){
+        if (person != null && person.getPersonId() > 0 ){
             return new UsernamePasswordAuthenticationToken(
                     email,
                     null,

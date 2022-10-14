@@ -1,5 +1,6 @@
 package com.fernandorobles.school.service;
 
+import com.fernandorobles.school.config.SchoolProps;
 import com.fernandorobles.school.constants.SchoolConstants;
 import com.fernandorobles.school.model.Contact;
 import com.fernandorobles.school.repository.ContactRepository;
@@ -20,6 +21,9 @@ public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
+    @Autowired
+    private SchoolProps schoolProps;
+
     public ContactService() {
         System.out.println("Contact Service Bean initialized");
     }
@@ -33,7 +37,10 @@ public class ContactService {
 
     public Page<Contact> findMessagesWithOpenStatus(
             int pageNum, String sortField, String sortDir) {
-        int pageSize = 5;
+        int pageSize = schoolProps.getPageSize();
+        if (schoolProps.getContact() != null && schoolProps.getContact().get("pageSize") != null){
+            pageSize = Integer.parseInt(schoolProps.getContact().get("pageSize").trim());
+        }
         Pageable pageable =
                 PageRequest.of(pageNum - 1, pageSize,
                         sortDir.equals("asc") ?
