@@ -12,9 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.ApplicationScope;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @Service
 @ApplicationScope
@@ -42,7 +39,7 @@ public class ContactService {
                         sortDir.equals("asc") ?
                                 Sort.by(sortField).ascending() :
                                 Sort.by(sortField).descending());
-        return contactRepository.findByStatus(SchoolConstants.OPEN, pageable);
+        return contactRepository.findByStatusWithQuery(SchoolConstants.OPEN, pageable);
     }
 
     public boolean updateMessageStatus(int contactId) {
